@@ -1,0 +1,13 @@
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\bin\Debug\netcoreapp3.1\RaytrAkkar.Remote.exe
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\bin\Debug\netcoreapp3.1\RaytrAkkar.Remote.deps.json
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\bin\Debug\netcoreapp3.1\RaytrAkkar.Remote.runtimeconfig.json
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\bin\Debug\netcoreapp3.1\RaytrAkkar.Remote.runtimeconfig.dev.json
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\bin\Debug\netcoreapp3.1\RaytrAkkar.Remote.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\bin\Debug\netcoreapp3.1\RaytrAkkar.Remote.pdb
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.csprojAssemblyReference.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.AssemblyInfoInputs.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.AssemblyInfo.cs
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.csproj.CoreCompileInputs.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.pdb
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Remote\obj\Debug\netcoreapp3.1\RaytrAkkar.Remote.genruntimeconfig.cache

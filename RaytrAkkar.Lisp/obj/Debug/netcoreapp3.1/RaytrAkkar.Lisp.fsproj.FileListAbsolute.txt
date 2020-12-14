@@ -1,0 +1,8 @@
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\bin\Debug\netcoreapp3.1\RaytrAkkar.Lisp.deps.json
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\bin\Debug\netcoreapp3.1\RaytrAkkar.Lisp.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\bin\Debug\netcoreapp3.1\RaytrAkkar.Lisp.pdb
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\obj\Debug\netcoreapp3.1\RaytrAkkar.Lisp.fsprojAssemblyReference.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\obj\Debug\netcoreapp3.1\RaytrAkkar.Lisp.AssemblyInfoInputs.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\obj\Debug\netcoreapp3.1\RaytrAkkar.Lisp.AssemblyInfo.fs
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\obj\Debug\netcoreapp3.1\RaytrAkkar.Lisp.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Lisp\obj\Debug\netcoreapp3.1\RaytrAkkar.Lisp.pdb

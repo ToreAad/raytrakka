@@ -1,0 +1,9 @@
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\bin\Release\netcoreapp3.1\RaytrAkkar.Raytracer.deps.json
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\bin\Release\netcoreapp3.1\RaytrAkkar.Raytracer.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\bin\Release\netcoreapp3.1\RaytrAkkar.Raytracer.pdb
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\obj\Release\netcoreapp3.1\RaytrAkkar.Raytracer.csprojAssemblyReference.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\obj\Release\netcoreapp3.1\RaytrAkkar.Raytracer.AssemblyInfoInputs.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\obj\Release\netcoreapp3.1\RaytrAkkar.Raytracer.AssemblyInfo.cs
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\obj\Release\netcoreapp3.1\RaytrAkkar.Raytracer.csproj.CoreCompileInputs.cache
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\obj\Release\netcoreapp3.1\RaytrAkkar.Raytracer.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar.Raytracer\obj\Release\netcoreapp3.1\RaytrAkkar.Raytracer.pdb

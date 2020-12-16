@@ -41,3 +41,4 @@ C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar\bin\Debug\netcoreapp3.1\Google
 C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
 C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Torea\source\repos\RaytrAkkar\RaytrAkkar\obj\Debug\netcoreapp3.1\RaytrAkkar.csproj.CoreCompileInputs.cache

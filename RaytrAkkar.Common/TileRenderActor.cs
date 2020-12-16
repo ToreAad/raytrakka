@@ -14,11 +14,13 @@ namespace RaytrAkkar.Common
     {
         private Task _runningTask;
         private CancellationTokenSource _cancel;
+        private IActorRef _supervisor;
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        public TileRenderActor()
+        public TileRenderActor(IActorRef supervisor)
         {
-            BecomeReady();
+            Become(Ready);
+            _supervisor = supervisor;
         }
 
         protected override void PreStart() => Log.Info($"TileRenderActor started");
@@ -109,66 +111,16 @@ namespace RaytrAkkar.Common
         {
             Receive<RenderTile>(tile =>
             {
-                var self = Self;
-                _runningTask = Task.Run(() =>
-                {
-                    var data = DoRendering(tile);
-                    return data;
-                }, _cancel.Token).ContinueWith<object>(x =>
-                {
-                    if (x.IsCanceled || x.IsFaulted)
-                    {
-                        return new FailedRenderTile(tile);
-                    }
-                    var data = x.Result.Flatten();
-
-                    return new RenderedTile(tile.Tile, data);
-                }, TaskContinuationOptions.ExecuteSynchronously).PipeTo(self);
-            });
-            Receive<Cancel>(cancel =>
-            {
-                _cancel.Cancel();
-                BecomeReady();
-            });
-            Receive<RenderedTile>(tile =>
-            {
-                Context.Parent.Tell(tile);
-                BecomeReady();
-            });
-            Receive<FailedRenderTile>(failedTile =>
-            {
-                Context.Parent.Tell(failedTile);
-                BecomeReady();
-            });
-            //Become(Working);
-        }
-
-        protected void Working()
-        {
-            Receive<Cancel>(cancel =>
-            {
-                _cancel.Cancel();
-                BecomeReady();
-            });
-            Receive<RenderedTile>(tile =>
-            {
-                Context.Parent.Tell(tile);
-                BecomeReady();
-            });
-            Receive<FailedRenderTile>(failedTile =>
-            {
-                Context.Parent.Tell(failedTile);
-                BecomeReady();
+                var sender = Sender;
+                var data = DoRendering(tile);
+                var msg = new RenderedTile(tile.Tile, data.Flatten());
+                Sender.Tell(msg);
+                _supervisor.Tell(msg);
             });
         }
 
-        private void BecomeReady()
-        {
-            _cancel = new CancellationTokenSource();
-            Become(Ready);
-        }
 
-        public static Props Props() => Akka.Actor.Props.Create(() => new TileRenderActor());
+        public static Props Props(IActorRef supervisor) => Akka.Actor.Props.Create(() => new TileRenderActor(supervisor));
     }
 
 

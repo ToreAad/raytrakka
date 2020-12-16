@@ -16,18 +16,6 @@
           "lib/netstandard2.0/Akka.dll": {}
         }
       },
-      "Akka.Cluster/1.4.12": {
-        "type": "package",
-        "dependencies": {
-          "Akka.Remote": "1.4.12"
-        },
-        "compile": {
-          "lib/netstandard2.0/Akka.Cluster.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Akka.Cluster.dll": {}
-        }
-      },
       "Akka.Remote/1.4.12": {
         "type": "package",
         "dependencies": {
@@ -1856,19 +1844,6 @@
         "akka.nuspec",
         "lib/netstandard2.0/Akka.dll",
         "lib/netstandard2.0/Akka.xml"
-      ]
-    },
-    "Akka.Cluster/1.4.12": {
-      "sha512": "m9kh1RbdCfCUHpH/vdGfDlcDqZVZ8zZChflOcmjHS2EfvK/uhvzyRYfHdA7/juklptCC9b1i/IKtVo5YovVRRQ==",
-      "type": "package",
-      "path": "akka.cluster/1.4.12",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "akka.cluster.1.4.12.nupkg.sha512",
-        "akka.cluster.nuspec",
-        "lib/netstandard2.0/Akka.Cluster.dll",
-        "lib/netstandard2.0/Akka.Cluster.xml"
       ]
     },
     "Akka.Remote/1.4.12": {
@@ -6260,7 +6235,6 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "Akka >= 1.4.12",
-      "Akka.Cluster >= 1.4.12",
       "Akka.Remote >= 1.4.12",
       "RaytrAkkar.Common >= 1.0.0"
     ]
@@ -6311,10 +6285,6 @@
       "netcoreapp3.1": {
         "dependencies": {
           "Akka": {
-            "target": "Package",
-            "version": "[1.4.12, )"
-          },
-          "Akka.Cluster": {
             "target": "Package",
             "version": "[1.4.12, )"
           },

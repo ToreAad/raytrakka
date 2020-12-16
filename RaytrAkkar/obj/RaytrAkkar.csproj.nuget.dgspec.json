@@ -173,10 +173,6 @@
               "target": "Package",
               "version": "[1.4.12, )"
             },
-            "Akka.Cluster": {
-              "target": "Package",
-              "version": "[1.4.12, )"
-            },
             "Akka.Remote": {
               "target": "Package",
               "version": "[1.4.12, )"

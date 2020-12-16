@@ -12,6 +12,7 @@ namespace RaytrAkkar.Common
         private Scene _scene;
         private byte[,,] _values;
         private readonly HashSet<int> _tilesBeingProcessed = new HashSet<int>();
+        private IActorRef _supervisor;
 
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
@@ -19,10 +20,11 @@ namespace RaytrAkkar.Common
         protected override void PreStart() => Log.Info($"SceneRenderActor-{_scene.SceneId} started");
         protected override void PostStop() => Log.Info($"SceneRenderActor-{_scene.SceneId} stopped");
 
-        public SceneRenderActor(Scene scene)
+        public SceneRenderActor(Scene scene, IActorRef supervisor)
         {
             _scene = scene;
             _values = new byte[_scene.Width, _scene.Height, 3];
+            _supervisor = supervisor;
         }
 
         protected override void OnReceive(object message)
@@ -42,7 +44,7 @@ namespace RaytrAkkar.Common
                                 var _w = Math.Min(w, _scene.Width - x);
                                 var tile = new Tile(_scene, tileIndex, x, y, _h, _w);
                                 var tileRenderRequest = new RenderTile(tile);
-                                Context.Parent.Tell(tileRenderRequest);
+                                _supervisor.Tell(tileRenderRequest);
                                 _tilesBeingProcessed.Add(tileIndex);
                                 tileIndex++;
                             }
@@ -69,13 +71,13 @@ namespace RaytrAkkar.Common
                         _tilesBeingProcessed.Remove(tile.Tile.TileId);
                         if(_tilesBeingProcessed.Count == 0)
                         {
-                            Context.Parent.Tell(new RenderedScene(_scene, _values.Flatten()));
+                            _supervisor.Tell(new RenderedScene(_scene, _values.Flatten()));
                         }
                         break;
                     }
             }
         }
 
-        public static Props Props(Scene scene) => Akka.Actor.Props.Create(() => new SceneRenderActor(scene));
+        public static Props Props(Scene scene, IActorRef supervisor) => Akka.Actor.Props.Create(() => new SceneRenderActor(scene, supervisor));
     }
 }

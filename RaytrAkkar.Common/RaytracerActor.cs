@@ -16,7 +16,7 @@ namespace RaytrAkkar.Common
         public ILoggingAdapter Log { get; } = Context.GetLogger();
         public RaytracerActor()
         {
-            _sceneRenderSupervisor = Context.ActorOf(SceneRenderSupervisor.Props(Self).WithRouter(FromConfig.Instance), $"scene-render-supervisor");
+            _sceneRenderSupervisor = Context.ActorOf(SceneRenderSupervisor.Props().WithRouter(FromConfig.Instance), $"scene-render-supervisor");
         }
         protected override void PreStart() => Log.Info("RaytracerActor started");
         protected override void PostStop() => Log.Info("RaytracerActor stopped");
@@ -26,44 +26,44 @@ namespace RaytrAkkar.Common
             switch (message)
             {
                 case RenderScene scene:
-                    _sceneRenderSupervisor.Tell(scene);
-                    foreach (var listener in _renderedSceneListeners)
-                    {
-                        listener.Tell(scene);
-                    }
+                    _sceneRenderSupervisor.Forward(scene);
+                    //foreach (var listener in _renderedSceneListeners)
+                    //{
+                    //    listener.Tell(scene);
+                    //}
                     break;
-                case RenderedScene renderedScene:
-                    foreach(var listener in _renderedSceneListeners)
-                    {
-                        listener.Tell(renderedScene);
-                    }
-                    break;
-                case RenderedTile renderedTile:
-                    foreach (var listener in _renderedTileListeners)
-                    {
-                        listener.Tell(renderedTile);
-                    }
-                    break;
-                case RegisterRenderedSceneListener listener:
-                    Log.Info($"RegisterRenderedSceneListener registered by {Sender.Path}");
-                    _renderedSceneListeners.Add(listener.actor);
-                    listener.actor.Tell(new Received());
-                    break;
-                case UnregisterRenderedSceneListener listener:
-                    Log.Info($"UnregisterRenderedSceneListener unregistered by {Sender.Path}");
-                    _renderedSceneListeners.Remove(listener.actor);
-                    listener.actor.Tell(new Received());
-                    break;
-                case RegisterRenderedTileListener listener:
-                    Log.Info($"RegisterRenderedTileListener registered by {Sender.Path}");
-                    _renderedTileListeners.Add(listener.actor);
-                    listener.actor.Tell(new Received());
-                    break;
-                case UnregisterRenderedTileListener listener:
-                    Log.Info($"UnregisterRenderedTileListener unregistered by {Sender.Path}");
-                    _renderedTileListeners.Remove(listener.actor);
-                    listener.actor.Tell(new Received());
-                    break;
+                //case RenderedScene renderedScene:
+                //    foreach(var listener in _renderedSceneListeners)
+                //    {
+                //        listener.Tell(renderedScene);
+                //    }
+                //    break;
+                //case RenderedTile renderedTile:
+                //    foreach (var listener in _renderedTileListeners)
+                //    {
+                //        listener.Tell(renderedTile);
+                //    }
+                //    break;
+                //case RegisterRenderedSceneListener listener:
+                //    Log.Info($"RegisterRenderedSceneListener registered by {Sender.Path}");
+                //    _renderedSceneListeners.Add(listener.actor);
+                //    listener.actor.Tell(new Received());
+                //    break;
+                //case UnregisterRenderedSceneListener listener:
+                //    Log.Info($"UnregisterRenderedSceneListener unregistered by {Sender.Path}");
+                //    _renderedSceneListeners.Remove(listener.actor);
+                //    listener.actor.Tell(new Received());
+                //    break;
+                //case RegisterRenderedTileListener listener:
+                //    Log.Info($"RegisterRenderedTileListener registered by {Sender.Path}");
+                //    _renderedTileListeners.Add(listener.actor);
+                //    listener.actor.Tell(new Received());
+                //    break;
+                //case UnregisterRenderedTileListener listener:
+                //    Log.Info($"UnregisterRenderedTileListener unregistered by {Sender.Path}");
+                //    _renderedTileListeners.Remove(listener.actor);
+                //    listener.actor.Tell(new Received());
+                //    break;
             }
         }
         

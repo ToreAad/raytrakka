@@ -36,8 +36,8 @@ namespace RaytrAkkar.Common
                     _bridge.Log($"{Self.Path} recieved a rendered tile with id {tile.Tile.Scene.SceneId}");
                     break;
                 case RenderScene scene:
+                    _raytracer.Tell(scene);
                     _bridge.AddScene(scene);
-                    _bridge.Log($"{Self.Path} recieved a new scene with id {scene.Scene.SceneId}");
                     break;
                 case Received _:
                     Log.Info($"{Self.Path} is registered with {_raytracer.PathString}");

@@ -6246,9 +6246,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.csproj",
-      "projectName": "RaytrAkkar",
-      "projectPath": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.csproj",
+      "projectUniqueName": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.RaytracerService.csproj",
+      "projectName": "RaytrAkkar.RaytracerService",
+      "projectPath": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.RaytracerService.csproj",
       "packagesPath": "C:\\Users\\Torea\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\obj\\",
       "projectStyle": "PackageReference",

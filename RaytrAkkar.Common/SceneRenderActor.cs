@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Event;
+using Akka.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,26 +14,27 @@ namespace RaytrAkkar.Common
         private byte[,,] _values;
         private readonly HashSet<int> _tilesBeingProcessed = new HashSet<int>();
         private IActorRef _supervisor;
+        private IActorRef _sender;
+        private readonly IActorRef _tileRenderer;
 
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-
-        protected override void PreStart() => Log.Info($"SceneRenderActor-{_scene.SceneId} started");
-        protected override void PostStop() => Log.Info($"SceneRenderActor-{_scene.SceneId} stopped");
-
-        public SceneRenderActor(Scene scene, IActorRef supervisor)
+        public SceneRenderActor(IActorRef supervisor)
         {
-            _scene = scene;
-            _values = new byte[_scene.Width, _scene.Height, 3];
+            
             _supervisor = supervisor;
+            _tileRenderer = Context.ActorOf(TileRenderActor.Props(Self).WithRouter(FromConfig.Instance), $"tile-renderer");
         }
 
         protected override void OnReceive(object message)
         {
             switch (message)
             {
-                case Run run:
+                case RenderScene scene:
                     {
+                        _scene = scene.Scene;
+                        _sender = Sender;
+                        _values = new byte[_scene.Width, _scene.Height, 3];
                         int w = 64;
                         int h = 64;
                         int tileIndex = 0;
@@ -44,7 +46,7 @@ namespace RaytrAkkar.Common
                                 var _w = Math.Min(w, _scene.Width - x);
                                 var tile = new Tile(_scene, tileIndex, x, y, _h, _w);
                                 var tileRenderRequest = new RenderTile(tile);
-                                _supervisor.Tell(tileRenderRequest);
+                                _tileRenderer.Tell(tileRenderRequest);
                                 _tilesBeingProcessed.Add(tileIndex);
                                 tileIndex++;
                             }
@@ -54,6 +56,7 @@ namespace RaytrAkkar.Common
 
                 case RenderedTile tile:
                     {
+                        _sender.Forward(tile);
                         int w = tile.Tile.Width;
                         int h = tile.Tile.Height;
                         var data = tile.Data.Unflatten(w, h, 3);
@@ -71,13 +74,15 @@ namespace RaytrAkkar.Common
                         _tilesBeingProcessed.Remove(tile.Tile.TileId);
                         if(_tilesBeingProcessed.Count == 0)
                         {
-                            _supervisor.Tell(new RenderedScene(_scene, _values.Flatten()));
+                            var msg = new RenderedScene(_scene, _values.Flatten());
+                            _supervisor.Tell(msg);
+                            _sender.Tell(msg);
                         }
                         break;
                     }
             }
         }
 
-        public static Props Props(Scene scene, IActorRef supervisor) => Akka.Actor.Props.Create(() => new SceneRenderActor(scene, supervisor));
+        public static Props Props(IActorRef supervisor) => Akka.Actor.Props.Create(() => new SceneRenderActor(supervisor));
     }
 }

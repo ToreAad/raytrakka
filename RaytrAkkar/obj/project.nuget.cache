@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lG6emrnX+zrDBJ4Rbe2hiFjSwKWiXf28VaWE8MPA2IxXmIRq1ylKSDJiF+B9SVG7yqkh0+P4qkJJqlVnStj6cw==",
+  "dgSpecHash": "Agzi05TfjRUccoT6oreu2oRVHs5ULw4/IairEugtAXFMUi4ih5nwa2jmCXIl6+fRU0Y0eWld+znrXwSwaz2Agw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.csproj",
+  "projectFilePath": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.RaytracerService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Torea\\.nuget\\packages\\akka\\1.4.12\\akka.1.4.12.nupkg.sha512",
     "C:\\Users\\Torea\\.nuget\\packages\\akka.remote\\1.4.12\\akka.remote.1.4.12.nupkg.sha512",

@@ -70,7 +70,7 @@ namespace RaytrAkkar.Common
             var lookAt = new Vec3(0, 0, -1);
 
             var cam = new Camera(lookFrom, lookAt, new Vec3(0, 1, 0), 20, (double)(w + scene.Width) / (double)(h + scene.Height), 0.5, (lookFrom - lookAt).Length());
-            var ns = 10;
+            var ns = 25;
             for (int dx = 0; dx < w; dx++)
             {
                 for (int dy = 0; dy < h; dy++)

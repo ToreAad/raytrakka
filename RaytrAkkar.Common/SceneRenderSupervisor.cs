@@ -25,8 +25,8 @@ namespace RaytrAkkar.Common
             switch (message)
             {
                 case RenderScene scene:
-                    var sender = Sender;
-                    var sceneRenderer = Context.ActorOf(SceneRenderActor.Props(Self), $"scene-renderer-{scene.Scene.SceneId}");
+                    Log.Info($"Received render scene request from {Sender.Path}");
+                    var sceneRenderer = Context.ActorOf(SceneRenderActor.Props(Self));
                     _sceneRenderers.Add(scene.Scene.SceneId, sceneRenderer);
                     sceneRenderer.Forward(scene);
                     break;

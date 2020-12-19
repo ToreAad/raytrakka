@@ -15,6 +15,7 @@ namespace RaytrAkkar.Winforms
 {
     public partial class RaytrAkkaForm : Form
     {
+        private int _counter = 0;
         private readonly ActorSystem _system;
         private IActorRef _imageWriter;
         private readonly Dictionary<int, Bitmap> _sceneIdToImg = new Dictionary<int, Bitmap>();
@@ -24,7 +25,6 @@ namespace RaytrAkkar.Winforms
             InitializeComponent();
             _system = system;
             _imageWriter = _system.ActorOf(RaytrakkaListenerActor.Props(RaytrakkaBridge.Instance), "winforms-listener");
-            //_raytracer = _system.ActorSelection("akka.tcp://raytracer-system@localhost:8081/user/raytracer");
 
             RaytrakkaBridge.Instance.AddedScene += ReactToSceneAdded;
             RaytrakkaBridge.Instance.RenderedScene += ReactoToSceneRendered;
@@ -127,7 +127,7 @@ namespace RaytrAkkar.Winforms
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            var scene = new Scene(0, 1024, 768);
+            var scene = new Scene(_counter++, 1024, 768);
             _imageWriter.Tell(new RenderScene(scene));
         }
 

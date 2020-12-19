@@ -169,9 +169,13 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
-            "Akka.Remote": {
+            "Akka": {
               "target": "Package",
-              "version": "[1.4.12, )"
+              "version": "[1.4.13, )"
+            },
+            "Akka.Cluster": {
+              "target": "Package",
+              "version": "[1.4.13, )"
             }
           },
           "imports": [

@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Event;
+using Akka.Routing;
 using RaytrAkkar.Common;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,15 @@ namespace RaytrAkkar.Common
     {
         private IRaytrakkaBridge _bridge;
 
-        private readonly ActorSelection _raytracer =
-            Context.ActorSelection("akka.tcp://raytracer-system@localhost:8081/user/raytracer");
+        private readonly IActorRef _raytracer;
 
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         public RaytrakkaListenerActor(IRaytrakkaBridge bridge)
         {
             _bridge = bridge;
+            var props = RaytracerActor.Props().WithRouter(FromConfig.Instance);
+            _raytracer = Context.ActorOf(props, "raytracer");
             _raytracer.Tell(new RegisterRenderedSceneListener { actor = Self});
             _raytracer.Tell(new RegisterRenderedTileListener { actor = Self });
         }
@@ -39,10 +41,6 @@ namespace RaytrAkkar.Common
                     _raytracer.Tell(scene);
                     _bridge.AddScene(scene);
                     break;
-                case Received _:
-                    Log.Info($"{Self.Path} is registered with {_raytracer.PathString}");
-                    _bridge.Log($"{Self.Path} is registered with {_raytracer.PathString}");
-                    break;  
             }
         }
 

@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Agzi05TfjRUccoT6oreu2oRVHs5ULw4/IairEugtAXFMUi4ih5nwa2jmCXIl6+fRU0Y0eWld+znrXwSwaz2Agw==",
+  "dgSpecHash": "+tUvNWGj2zYb8X5GT0qgJ3CfUB/51j7Sa9UzAK9gzZlNyBvP7oA19zSeVrF6+UcS7FEBc8XrXqTrW8I4fhEDxA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Torea\\source\\repos\\RaytrAkkar\\RaytrAkkar\\RaytrAkkar.RaytracerService.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Torea\\.nuget\\packages\\akka\\1.4.12\\akka.1.4.12.nupkg.sha512",
-    "C:\\Users\\Torea\\.nuget\\packages\\akka.remote\\1.4.12\\akka.remote.1.4.12.nupkg.sha512",
+    "C:\\Users\\Torea\\.nuget\\packages\\akka\\1.4.13\\akka.1.4.13.nupkg.sha512",
+    "C:\\Users\\Torea\\.nuget\\packages\\akka.cluster\\1.4.13\\akka.cluster.1.4.13.nupkg.sha512",
+    "C:\\Users\\Torea\\.nuget\\packages\\akka.remote\\1.4.13\\akka.remote.1.4.13.nupkg.sha512",
     "C:\\Users\\Torea\\.nuget\\packages\\dotnetty.buffers\\0.6.0\\dotnetty.buffers.0.6.0.nupkg.sha512",
     "C:\\Users\\Torea\\.nuget\\packages\\dotnetty.codecs\\0.6.0\\dotnetty.codecs.0.6.0.nupkg.sha512",
     "C:\\Users\\Torea\\.nuget\\packages\\dotnetty.common\\0.6.0\\dotnetty.common.0.6.0.nupkg.sha512",

@@ -10,14 +10,17 @@ namespace RaytrAkkar
     {
         static void Main(string[] args)
         {
-            var config = ConfigurationFactory.Load();
-            using (var system = ActorSystem.Create("raytracer-system", config))
+            var service = new RaytracerService.RaytracerService();
+            service.Start();
+            Console.Title = "RaytracerService";
+
+            Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                var imageWriter = system.ActorOf(WriteImageToDiskActor.Props(), "image-writer");
-                var raytracer = system.ActorOf(RaytracerActor.Props(), "raytracer");
-                Console.WriteLine("Press a key to quit");
-                Console.ReadKey();
-            }
+                service.Stop().Wait();
+                eventArgs.Cancel = true;
+            };
+
+            service.UntilTerminated.Wait();
         }
     }
 }

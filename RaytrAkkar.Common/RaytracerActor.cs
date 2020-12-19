@@ -26,44 +26,9 @@ namespace RaytrAkkar.Common
             switch (message)
             {
                 case RenderScene scene:
+                    Log.Info($"Received render scene request from {Sender.Path}");
                     _sceneRenderSupervisor.Forward(scene);
-                    //foreach (var listener in _renderedSceneListeners)
-                    //{
-                    //    listener.Tell(scene);
-                    //}
                     break;
-                //case RenderedScene renderedScene:
-                //    foreach(var listener in _renderedSceneListeners)
-                //    {
-                //        listener.Tell(renderedScene);
-                //    }
-                //    break;
-                //case RenderedTile renderedTile:
-                //    foreach (var listener in _renderedTileListeners)
-                //    {
-                //        listener.Tell(renderedTile);
-                //    }
-                //    break;
-                //case RegisterRenderedSceneListener listener:
-                //    Log.Info($"RegisterRenderedSceneListener registered by {Sender.Path}");
-                //    _renderedSceneListeners.Add(listener.actor);
-                //    listener.actor.Tell(new Received());
-                //    break;
-                //case UnregisterRenderedSceneListener listener:
-                //    Log.Info($"UnregisterRenderedSceneListener unregistered by {Sender.Path}");
-                //    _renderedSceneListeners.Remove(listener.actor);
-                //    listener.actor.Tell(new Received());
-                //    break;
-                //case RegisterRenderedTileListener listener:
-                //    Log.Info($"RegisterRenderedTileListener registered by {Sender.Path}");
-                //    _renderedTileListeners.Add(listener.actor);
-                //    listener.actor.Tell(new Received());
-                //    break;
-                //case UnregisterRenderedTileListener listener:
-                //    Log.Info($"UnregisterRenderedTileListener unregistered by {Sender.Path}");
-                //    _renderedTileListeners.Remove(listener.actor);
-                //    listener.actor.Tell(new Received());
-                //    break;
             }
         }
         

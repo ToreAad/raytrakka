@@ -14,13 +14,11 @@ namespace RaytrAkkar.Common
     {
         private Task _runningTask;
         private CancellationTokenSource _cancel;
-        private IActorRef _supervisor;
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        public TileRenderActor(IActorRef supervisor)
+        public TileRenderActor()
         {
             Become(Ready);
-            _supervisor = supervisor;
         }
 
         protected override void PreStart() => Log.Info($"TileRenderActor started");
@@ -96,17 +94,6 @@ namespace RaytrAkkar.Common
             return data;
         }
 
-        //protected override void OnReceive(object message)
-        //{
-        //    switch (message)
-        //    {
-        //        case RenderTile tile:
-        //            var data = DoRendering(tile);
-        //            Sender.Tell(new RenderedTile(tile.Scene.SceneId, tile.TileId, tile.X, tile.Y, data));
-        //            break;
-        //    }
-        //}
-
         protected void Ready()
         {
             Receive<RenderTile>(tile =>
@@ -115,12 +102,10 @@ namespace RaytrAkkar.Common
                 var data = DoRendering(tile);
                 var msg = new RenderedTile(tile.Tile, data.Flatten());
                 Sender.Tell(msg);
-                _supervisor.Tell(msg);
             });
         }
 
-
-        public static Props Props(IActorRef supervisor) => Akka.Actor.Props.Create(() => new TileRenderActor(supervisor));
+        public static Props Props() => Akka.Actor.Props.Create(() => new TileRenderActor());
     }
 
 

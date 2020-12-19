@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Akka.Actor;
+using Akka.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -9,10 +12,20 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RaytrAkkar.Common;
 using RaytrAkkar.Web.Data;
 
 namespace RaytrAkkar.Web
 {
+    public class RaytrakkaListener
+    {
+        public IActorRef actorRef;
+
+        public RaytrakkaListener(IActorRef actorRef)
+        {
+            this.actorRef = actorRef;
+        }
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -28,7 +41,23 @@ namespace RaytrAkkar.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<ActorSystem>( _ => {
+                var config = ConfigurationFactory.ParseString(File.ReadAllText("web.hocon"));
+                var actorSystem = ActorSystem.Create("raytrakkar", config);
+                return actorSystem;
+            });
+
+            services.AddSingleton<RaytrakkaBridge>( provider => {
+                var raytrakkaBridge = new RaytrakkaBridge();
+                return raytrakkaBridge;
+            });
+
+            services.AddSingleton<RaytrakkaListener>(provider => {
+                var raytrakkaBridge = provider.GetService<RaytrakkaBridge>();
+                var actorSystem = provider.GetService<ActorSystem>();
+                var actorRef = actorSystem.ActorOf(RaytrakkaListenerActor.Props(raytrakkaBridge), "blazor-listener");
+                return new RaytrakkaListener(actorRef);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RaytrAkkar.Common;
+using System;
 
 namespace RaytrAkkar.SceneRenderService
 {
@@ -6,7 +7,19 @@ namespace RaytrAkkar.SceneRenderService
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var service = new SceneRenderService();
+            service.Start();
+
+            Console.Title = "SceneRenderService";
+
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                service.Stop().Wait();
+                eventArgs.Cancel = true;
+            };
+
+            service.UntilTerminated.Wait();
+
         }
     }
 }

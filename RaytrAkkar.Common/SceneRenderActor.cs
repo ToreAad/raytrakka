@@ -12,10 +12,11 @@ namespace RaytrAkkar.Common
     {
         private Scene _scene;
         private byte[,,] _values;
-        private readonly HashSet<int> _tilesBeingProcessed = new HashSet<int>();
+        private readonly HashSet<Tile> _tilesBeingProcessed = new HashSet<Tile>();
         private IActorRef _supervisor;
         private IActorRef _sender;
         private readonly IActorRef _tileRenderer;
+        private DateTime _lastReceived;
 
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
@@ -23,7 +24,11 @@ namespace RaytrAkkar.Common
         {
             
             _supervisor = supervisor;
-            _tileRenderer = Context.ActorOf(TileRenderActor.Props(Self).WithRouter(FromConfig.Instance), $"tile-renderer");
+            _tileRenderer = Context.ActorOf(TileRenderActor.Props().WithRouter(FromConfig.Instance), $"tile-renderer");
+            foreach(var _ in Enumerable.Range(0, 10))
+            {
+                _tileRenderer.Tell(PoolPrimer.Instance);
+            }
         }
 
         protected override void OnReceive(object message)
@@ -32,6 +37,7 @@ namespace RaytrAkkar.Common
             {
                 case RenderScene scene:
                     {
+                        Log.Info($"Received render scene request from {Sender.Path}");
                         _scene = scene.Scene;
                         _sender = Sender;
                         _values = new byte[_scene.Width, _scene.Height, 3];
@@ -47,15 +53,45 @@ namespace RaytrAkkar.Common
                                 var tile = new Tile(_scene, tileIndex, x, y, _h, _w);
                                 var tileRenderRequest = new RenderTile(tile);
                                 _tileRenderer.Tell(tileRenderRequest);
-                                _tilesBeingProcessed.Add(tileIndex);
+                                _tilesBeingProcessed.Add(tile);
                                 tileIndex++;
                             }
+                        }
+
+                        _lastReceived = DateTime.Now;
+
+                        Context.System.Scheduler.ScheduleTellRepeatedly(
+                            TimeSpan.FromSeconds(0), 
+                            TimeSpan.FromSeconds(5),
+                            Self, ConsiderResendingTiles.Instance, ActorRefs.NoSender);
+
+                        break;
+                    }
+
+                case ConsiderResendingTiles _:
+                    {
+                        var now = DateTime.Now;
+                        if (now - _lastReceived > TimeSpan.FromSeconds(10))
+                        {
+                            Log.Info("Timeout I am resending missing tiles");
+                            foreach(var tile in _tilesBeingProcessed)
+                            {
+                                var tileRenderRequest = new RenderTile(tile);
+                                _tileRenderer.Tell(tileRenderRequest);
+                            }
+                            _lastReceived = DateTime.Now + TimeSpan.FromSeconds(5);
                         }
                         break;
                     }
 
                 case RenderedTile tile:
                     {
+                        _lastReceived = DateTime.Now;
+                        if (!_tilesBeingProcessed.Contains(tile.Tile))
+                        {
+                            break;
+                        }
+                        Log.Info($"Recieved tile with scene-tile-id:{tile.Tile.Scene.SceneId}-{tile.Tile.TileId}");
                         _sender.Forward(tile);
                         int w = tile.Tile.Width;
                         int h = tile.Tile.Height;
@@ -71,7 +107,7 @@ namespace RaytrAkkar.Common
                             }
                         }
 
-                        _tilesBeingProcessed.Remove(tile.Tile.TileId);
+                        _tilesBeingProcessed.Remove(tile.Tile);
                         if(_tilesBeingProcessed.Count == 0)
                         {
                             var msg = new RenderedScene(_scene, _values.Flatten());

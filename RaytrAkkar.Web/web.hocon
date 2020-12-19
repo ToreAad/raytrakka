@@ -1,0 +1,41 @@
+﻿akka {
+    stdout-loglevel = DEBUG
+    loglevel = DEBUG
+    log-config-on-start = on        
+
+	actor{
+		provider = cluster
+    debug {  
+            receive = on 
+            autoreceive = on
+            lifecycle = on
+            event-stream = on
+            unhandled = on
+        }
+              
+        deployment{
+        "/blazor-listener/raytracer"{
+            router = round-robin-group
+            routees.paths = ["/user/raytracer"]
+            cluster{
+            enabled = on
+            allow-local-routees = on
+            use-role = RaytracerService
+            }
+        }
+        }
+	}
+
+	remote {
+		dot-netty.tcp{
+			port = 0
+			hostname = localhost
+        maximum-frame-size = 8000000b
+		}
+	}
+    cluster{
+    seed-nodes = ["akka.tcp://raytrakkar@localhost:4053"]
+    roles = ["BlazorUI"]
+    role.["RaytracerService"].min-nr-of-members = 1
+    }
+}

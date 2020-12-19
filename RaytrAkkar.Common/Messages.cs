@@ -74,6 +74,22 @@ namespace RaytrAkkar.Common
         public int Y { get; }
         public int Height { get; }
         public int Width { get; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Tile tile &&
+                   TileId == tile.TileId &&
+                   EqualityComparer<Scene>.Default.Equals(Scene, tile.Scene) &&
+                   X == tile.X &&
+                   Y == tile.Y &&
+                   Height == tile.Height &&
+                   Width == tile.Width;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(TileId, Scene, X, Y, Height, Width);
+        }
     }
 
     public class RenderTile
@@ -120,10 +136,35 @@ namespace RaytrAkkar.Common
         public int SceneId { get; }
         public int Width { get; }
         public int Height { get; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Scene scene &&
+                   SceneId == scene.SceneId &&
+                   Width == scene.Width &&
+                   Height == scene.Height;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(SceneId, Width, Height);
+        }
     }
 
     public class Run
     {
 
+    }
+
+    public class ConsiderResendingTiles
+    {
+        public static ConsiderResendingTiles Instance { get; } = new ConsiderResendingTiles();
+        private ConsiderResendingTiles() { }
+    }
+
+    public class PoolPrimer
+    {
+        public static PoolPrimer Instance { get; } = new PoolPrimer();
+        private PoolPrimer() { }
     }
 }

@@ -18,7 +18,7 @@ namespace RaytrAkkar.Winforms
         static void Main()
         {
             var config = ConfigurationFactory.Load();
-            using (var system = ActorSystem.Create("raytracer-winforms", config))
+            using (var system = ActorSystem.Create("raytrakkar", config))
             {
                 Application.SetHighDpiMode(HighDpiMode.SystemAware);
                 Application.EnableVisualStyles();

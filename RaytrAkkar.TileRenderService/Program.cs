@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RaytrAkkar.Common;
+using System;
 
 namespace RaytrAkkar.TileRenderService
 {
@@ -6,7 +7,18 @@ namespace RaytrAkkar.TileRenderService
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var service = new TileRenderService();
+            service.Start();
+
+            Console.Title = "TileRenderService";
+
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                service.Stop().Wait();
+                eventArgs.Cancel = true;
+            };
+
+            service.UntilTerminated.Wait();
         }
     }
 }

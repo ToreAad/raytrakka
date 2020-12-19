@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "Akka/1.4.12": {
+      "Akka/1.4.13": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "12.0.3",
@@ -16,10 +16,22 @@
           "lib/netstandard2.0/Akka.dll": {}
         }
       },
-      "Akka.Remote/1.4.12": {
+      "Akka.Cluster/1.4.13": {
         "type": "package",
         "dependencies": {
-          "Akka": "1.4.12",
+          "Akka.Remote": "1.4.13"
+        },
+        "compile": {
+          "lib/netstandard2.0/Akka.Cluster.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Akka.Cluster.dll": {}
+        }
+      },
+      "Akka.Remote/1.4.13": {
+        "type": "package",
+        "dependencies": {
+          "Akka": "1.4.13",
           "DotNetty.Handlers": "0.6.0",
           "Google.Protobuf": "3.14.0"
         },
@@ -1833,27 +1845,40 @@
     }
   },
   "libraries": {
-    "Akka/1.4.12": {
-      "sha512": "YBu3Q07R2wthLz3RQHKkzassGgT63x3z+ntDONZfXeA8xDB9cGXOCr31Nhh+Xmpv0vfNnuw5q+tLOjUXJu9olw==",
+    "Akka/1.4.13": {
+      "sha512": "Bmc8Tb8Qf+vIM7wVNjST57rfig+M24VNSn1y5bIGqxT+orHAfmmNCtn+cLPCJaGTibsu/84uk5rWSzi40VFkwQ==",
       "type": "package",
-      "path": "akka/1.4.12",
+      "path": "akka/1.4.13",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "akka.1.4.12.nupkg.sha512",
+        "akka.1.4.13.nupkg.sha512",
         "akka.nuspec",
         "lib/netstandard2.0/Akka.dll",
         "lib/netstandard2.0/Akka.xml"
       ]
     },
-    "Akka.Remote/1.4.12": {
-      "sha512": "58CQy8fxBOoGJjPywwlsRkHMRM66DR2/jrxAKPw608K2OQGc5XakzUGTH0Py58Icihn6eokEL2/PfVLcttAbgw==",
+    "Akka.Cluster/1.4.13": {
+      "sha512": "mRLAIWwC4WuPWew+DL4KNBx162DxYflV3hST41EAZ1MJY7p81pc+pUDWFuAcdD1To7s72p3OCL14VfRqlgrGpg==",
       "type": "package",
-      "path": "akka.remote/1.4.12",
+      "path": "akka.cluster/1.4.13",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "akka.remote.1.4.12.nupkg.sha512",
+        "akka.cluster.1.4.13.nupkg.sha512",
+        "akka.cluster.nuspec",
+        "lib/netstandard2.0/Akka.Cluster.dll",
+        "lib/netstandard2.0/Akka.Cluster.xml"
+      ]
+    },
+    "Akka.Remote/1.4.13": {
+      "sha512": "+zbsKuf1saaCWjSrelMJfmpZoADusaMps0l9S/T6VWomSSSWt7b3UYmjFOBC468QKyhZY+DBtPf/y1ViN0XVsg==",
+      "type": "package",
+      "path": "akka.remote/1.4.13",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "akka.remote.1.4.13.nupkg.sha512",
         "akka.remote.nuspec",
         "lib/netstandard2.0/Akka.Remote.dll",
         "lib/netstandard2.0/Akka.Remote.xml"
@@ -6234,8 +6259,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "Akka >= 1.4.12",
-      "Akka.Remote >= 1.4.12",
+      "Akka >= 1.4.13",
+      "Akka.Cluster >= 1.4.13",
       "RaytrAkkar.Common >= 1.0.0"
     ]
   },
@@ -6286,11 +6311,11 @@
         "dependencies": {
           "Akka": {
             "target": "Package",
-            "version": "[1.4.12, )"
+            "version": "[1.4.13, )"
           },
-          "Akka.Remote": {
+          "Akka.Cluster": {
             "target": "Package",
-            "version": "[1.4.12, )"
+            "version": "[1.4.13, )"
           }
         },
         "imports": [

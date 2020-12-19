@@ -1,0 +1,37 @@
+﻿<select name="scenes" id="scenes" @bind="CheckSelected" >
+    @foreach (var item in Data)
+    {
+        <option selected="@((item == SelectedItem) ? "selected" : "")" value="@item">Scene @item</option>
+    }
+</select>
+
+@code {
+    //From https://stackoverflow.com/questions/58125929/blazor-how-to-use-the-onchange-event-in-select-when-using-bind-also
+    [ParameterAttribute]
+    public List<string> Data { get; set; }
+
+    [ParameterAttribute]
+    public string SelectedItem { get; set; }
+
+    [ParameterAttribute]
+    public Action<string> Callback { get; set; } = (_) => { };
+
+    private string CheckSelected
+    {
+        get => SelectedItem;
+        set {
+            var selectedEventArgs = new ChangeEventArgs();
+            selectedEventArgs.Value = value;
+            Callback(value);
+            OnChangeSelected(selectedEventArgs);
+        }
+    }
+
+    private void OnChangeSelected(ChangeEventArgs e)
+    {
+        if (e.Value.ToString() != string.Empty)
+        {
+            SelectedItem = e.Value.ToString();
+        }
+    }
+}

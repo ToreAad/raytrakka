@@ -25,9 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{6541BA79-413F-4A68-8D19-1B992D5CCFCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaytrAkkar.SceneRenderService", "RaytrAkkar.SceneRenderService\RaytrAkkar.SceneRenderService.csproj", "{19BDA785-B6E9-4D0D-A335-CB49BF3C6C61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaytrAkkar.SceneRenderService", "RaytrAkkar.SceneRenderService\RaytrAkkar.SceneRenderService.csproj", "{19BDA785-B6E9-4D0D-A335-CB49BF3C6C61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaytrAkkar.TileRenderService", "RaytrAkkar.TileRenderService\RaytrAkkar.TileRenderService.csproj", "{26CBF82E-F3D6-41D6-B108-36787959B2DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaytrAkkar.TileRenderService", "RaytrAkkar.TileRenderService\RaytrAkkar.TileRenderService.csproj", "{26CBF82E-F3D6-41D6-B108-36787959B2DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

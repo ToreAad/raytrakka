@@ -38,6 +38,8 @@ msbuild.wrn
 
 */obj/
 *.cache
+*.dll
+*.pdb
 
 **/[Dd]ebug/
 **/[Dd]ebugPublic/

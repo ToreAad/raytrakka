@@ -128,6 +128,7 @@ namespace RaytrAkkar.Winforms
         private void button1_Click(object sender, EventArgs e)
         {
             var scene = new Scene(_counter++, 1024, 768);
+            scene.Src = richTextBox_lispScene.Text;
             _imageWriter.Tell(new RenderScene(scene));
         }
 

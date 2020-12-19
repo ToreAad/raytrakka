@@ -61,6 +61,7 @@
     private void Render()
     {
         var scene = new Scene(currentCount++, width, height);
+        scene.Src = lispScene;
         RaytrakkaListener.actorRef.Tell(new RenderScene(scene));
     }
 

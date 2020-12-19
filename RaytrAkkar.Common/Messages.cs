@@ -136,18 +136,20 @@ namespace RaytrAkkar.Common
         public int SceneId { get; }
         public int Width { get; }
         public int Height { get; }
+        public string Src { get; set; }
 
         public override bool Equals(object obj)
         {
             return obj is Scene scene &&
                    SceneId == scene.SceneId &&
                    Width == scene.Width &&
-                   Height == scene.Height;
+                   Height == scene.Height &&
+                   Src == scene.Src;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SceneId, Width, Height);
+            return HashCode.Combine(SceneId, Width, Height, Src);
         }
     }
 

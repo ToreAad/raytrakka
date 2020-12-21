@@ -9,7 +9,7 @@ namespace RaytrAkkar.Common
 {
     public class SceneRenderSupervisor : UntypedActor
     {
-        private readonly Dictionary<int, IActorRef> _sceneRenderers = new Dictionary<int, IActorRef>();
+        private readonly Dictionary<string, IActorRef> _sceneRenderers = new Dictionary<string, IActorRef>();
 
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 

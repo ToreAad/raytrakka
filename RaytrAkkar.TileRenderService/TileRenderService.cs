@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Bootstrap.Docker;
 using Akka.Configuration;
 using Akka.Routing;
 using RaytrAkkar.Common;
@@ -20,7 +21,7 @@ namespace RaytrAkkar.TileRenderService
         public bool Start()
         {
             var config = ConfigurationFactory.Load();
-            _actorSystem = ActorSystem.Create("raytrakkar", config);
+            _actorSystem = ActorSystem.Create("raytrakkar", config.BootstrapFromDocker());
             _tileRenderService = _actorSystem.ActorOf(TileRenderActor.Props().WithRouter(FromConfig.Instance), "tilerenderer");
             foreach(var _ in Enumerable.Range(0, 10))
             {

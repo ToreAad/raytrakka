@@ -126,14 +126,14 @@ namespace RaytrAkkar.Common
 
     public class Scene
     {
-        public Scene(int sceneId, int width, int height)
+        public Scene(string sceneId, int width, int height)
         {
             SceneId = sceneId;
             Width = width;
             Height = height;
         }
 
-        public int SceneId { get; }
+        public string SceneId { get; }
         public int Width { get; }
         public int Height { get; }
         public string Src { get; set; }

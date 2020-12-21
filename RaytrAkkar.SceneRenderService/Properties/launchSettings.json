@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RaytrAkkar.SceneRenderService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

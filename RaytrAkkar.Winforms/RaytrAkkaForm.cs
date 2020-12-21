@@ -18,7 +18,7 @@ namespace RaytrAkkar.Winforms
         private int _counter = 0;
         private readonly ActorSystem _system;
         private IActorRef _imageWriter;
-        private readonly Dictionary<int, Bitmap> _sceneIdToImg = new Dictionary<int, Bitmap>();
+        private readonly Dictionary<string, Bitmap> _sceneIdToImg = new Dictionary<string, Bitmap>();
 
         public RaytrAkkaForm(ActorSystem system)
         {
@@ -127,7 +127,7 @@ namespace RaytrAkkar.Winforms
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            var scene = new Scene(_counter++, 1024, 768);
+            var scene = new Scene((_counter++).ToString(), 1024, 768);
             scene.Src = richTextBox_lispScene.Text;
             _imageWriter.Tell(new RenderScene(scene));
         }
@@ -136,7 +136,7 @@ namespace RaytrAkkar.Winforms
         {
             var action = new Action(() =>
             {
-                var img = _sceneIdToImg[int.Parse(comboBoxScene.SelectedItem as string)];
+                var img = _sceneIdToImg[comboBoxScene.SelectedItem as string];
                 pictureBoxRender.Image = img;
             });
             if (InvokeRequired)

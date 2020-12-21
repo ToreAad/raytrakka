@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Bootstrap.Docker;
 using Akka.Configuration;
 using Akka.Routing;
 using RaytrAkkar.Common;
@@ -21,7 +22,7 @@ namespace RaytrAkkar.SceneRenderService
         public bool Start()
         {
             var config = ConfigurationFactory.Load();
-            _actorSystem = ActorSystem.Create("raytrakkar", config);
+            _actorSystem = ActorSystem.Create("raytrakkar", config.BootstrapFromDocker());
             _sceneRenderSupervisor = _actorSystem.ActorOf(SceneRenderSupervisor.Props().WithRouter(FromConfig.Instance), "scene-render-supervisor");
             foreach (var _ in Enumerable.Range(0, 2))
             {

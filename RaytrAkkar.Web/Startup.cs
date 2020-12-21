@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Akka.Bootstrap.Docker;
 using Akka.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -26,6 +29,18 @@ namespace RaytrAkkar.Web
             this.actorRef = actorRef;
         }
     }
+
+    public class IdToScene
+    {
+        public readonly ConcurrentDictionary<string, Bitmap> Collection = new ConcurrentDictionary<string, Bitmap>();
+    }
+
+    public class SceneIds
+    {
+        public readonly ConcurrentBag<string> Collection = new ConcurrentBag<string>();
+
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -43,7 +58,7 @@ namespace RaytrAkkar.Web
             services.AddServerSideBlazor();
             services.AddSingleton<ActorSystem>( _ => {
                 var config = ConfigurationFactory.ParseString(File.ReadAllText("web.hocon"));
-                var actorSystem = ActorSystem.Create("raytrakkar", config);
+                var actorSystem = ActorSystem.Create("raytrakkar", config.BootstrapFromDocker());
                 return actorSystem;
             });
 
@@ -51,13 +66,23 @@ namespace RaytrAkkar.Web
                 var raytrakkaBridge = new RaytrakkaBridge();
                 return raytrakkaBridge;
             });
-
             services.AddSingleton<RaytrakkaListener>(provider => {
                 var raytrakkaBridge = provider.GetService<RaytrakkaBridge>();
                 var actorSystem = provider.GetService<ActorSystem>();
                 var actorRef = actorSystem.ActorOf(RaytrakkaListenerActor.Props(raytrakkaBridge), "blazor-listener");
                 return new RaytrakkaListener(actorRef);
             });
+
+            services.AddSingleton<IdToScene>(_ =>
+            {
+                return new IdToScene();
+            });
+
+            services.AddSingleton<SceneIds>(_ =>
+            {
+                return new SceneIds();
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

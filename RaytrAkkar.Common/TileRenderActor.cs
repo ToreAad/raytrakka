@@ -12,8 +12,6 @@ namespace RaytrAkkar.Common
 {
     public class TileRenderActor : ReceiveActor
     {
-        private Task _runningTask;
-        private CancellationTokenSource _cancel;
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         public TileRenderActor()

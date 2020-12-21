@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RaytrAkkar.TileRenderService": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

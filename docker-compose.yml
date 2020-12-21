@@ -1,0 +1,63 @@
+version: '3.4'
+
+services:
+  lighthouse:
+    image: petabridge/lighthouse:latest
+    ports:
+      - '9110:9110'
+      - '4053:4053'
+    environment:
+      ACTORSYSTEM: "raytrakkar"
+      CLUSTER_IP: lighthouse
+      CLUSTER_PORT: 4053
+      CLUSTER_SEEDS: "akka.tcp://raytrakkar@lighthouse:4053"
+
+  raytrakkar.web:
+    image: ${DOCKER_REGISTRY-}raytrakkarweb
+    build:
+      context: .
+      dockerfile: RaytrAkkar.Web/Dockerfile
+    ports:
+        - '8080:80'
+    environment:
+      CLUSTER_SEEDS: "akka.tcp://raytrakkar@lighthouse:4053"
+      CLUSTER_IP: raytrakkar.web
+      CLUSTER_PORT: 0
+    depends_on:
+      - "lighthouse"
+
+  raytrakkar.tilerenderservice:
+    image: ${DOCKER_REGISTRY-}raytrakkartilerenderservice
+    build:
+      context: .
+      dockerfile: RaytrAkkar.TileRenderService/Dockerfile
+    environment:
+      CLUSTER_SEEDS: "akka.tcp://raytrakkar@lighthouse:4053"
+      CLUSTER_IP: raytrakkar.tilerenderservice
+      CLUSTER_PORT: 0
+    depends_on:
+      - "lighthouse"
+
+  raytrakkar.scenerenderservice:
+    image: ${DOCKER_REGISTRY-}raytrakkarscenerenderservice
+    build:
+      context: .
+      dockerfile: RaytrAkkar.SceneRenderService/Dockerfile
+    environment:
+      CLUSTER_SEEDS: "akka.tcp://raytrakkar@lighthouse:4053"
+      CLUSTER_IP: raytrakkar.scenerenderservice
+      CLUSTER_PORT: 0
+    depends_on:
+      - "lighthouse"
+
+  raytrakkar.raytracerservice:
+    image: ${DOCKER_REGISTRY-}raytrakkarraytracerservice
+    build:
+      context: .
+      dockerfile: RaytrAkkar/Dockerfile
+    environment:
+      CLUSTER_SEEDS: "akka.tcp://raytrakkar@lighthouse:4053"
+      CLUSTER_IP: raytrakkar.raytracerservice
+      CLUSTER_PORT: 0
+    depends_on:
+      - "lighthouse"

@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Bootstrap.Docker;
 using Akka.Configuration;
 using RaytrAkkar.Common;
 using System;
@@ -18,7 +19,7 @@ namespace RaytrAkkar.RaytracerService
         public bool Start()
         {
             var config = ConfigurationFactory.Load();
-            _actorSystem = ActorSystem.Create("raytrakkar", config);
+            _actorSystem = ActorSystem.Create("raytrakkar", config.BootstrapFromDocker());
             _raytracerService = _actorSystem.ActorOf(RaytracerActor.Props(), "raytracer");
             return true;
         }

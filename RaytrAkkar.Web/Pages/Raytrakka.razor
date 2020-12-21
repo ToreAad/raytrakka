@@ -2,15 +2,19 @@
 
 @inject RaytrakkaBridge RaytrakkaBridgeService
 @inject RaytrakkaListener RaytrakkaListener
+@inject IdToScene IdToScene
+@inject SceneIds SceneIds
 @using RaytrAkkar.Common
 @using System.Drawing;
 @using Akka.Actor;
 @using System.IO;
+@using System.Linq;
+@using System.Collections.Concurrent;
 
 <div class="flex-container">
     <div>
         <h1>RaytrAkka</h1>
-        <ComboBox Data="@scenesRendered" SelectedItem="@currentScene" Callback="@ComboBoxSet"/>
+        <ComboBox Data="@scenesRendered" SelectedItem="@currentScene" Callback="@ComboBoxSet" />
     </div>
     <div>
         <Image Value="@imageString" />
@@ -34,7 +38,7 @@
 
     public string lispScene { get; set; } = "(none 0 0)";
 
-    public List<string> scenesRendered { get; set; } = new List<string>();
+    public List<string> scenesRendered => SceneIds.Collection.ToList();
     public string currentScene;
 
 
@@ -56,34 +60,51 @@
     }
 
     private int currentCount = 0;
-    private readonly Dictionary<int, Bitmap> _sceneIdToImg = new Dictionary<int, Bitmap>();
+    private ConcurrentDictionary<string, Bitmap> _sceneIdToImg => IdToScene.Collection;
 
     private void Render()
     {
-        var scene = new Scene(currentCount++, width, height);
+        var guid = Guid.NewGuid();
+        var scene = new Scene(guid.ToString("D"), width, height);
         scene.Src = lispScene;
         RaytrakkaListener.actorRef.Tell(new RenderScene(scene));
+        var isNew = AddToCombBox($"{scene.SceneId}");
+        if (isNew)
+        {
+            var img = new Bitmap(scene.Width, scene.Height);
+            _sceneIdToImg[scene.SceneId] = img;
+            UpdateImage(img);
+        }
     }
 
     public void ReactToSceneAdded(object sender, RenderScene scene)
     {
         Console.WriteLine("SceneAdded called");
-        AddToCombBox($"{scene.Scene.SceneId}");
-        var img = new Bitmap(scene.Scene.Width, scene.Scene.Height);
-        _sceneIdToImg[scene.Scene.SceneId] = img;
-        UpdateImage(img);
+        var isNew = AddToCombBox($"{scene.Scene.SceneId}");
+        if (isNew)
+        {
+            var img = new Bitmap(scene.Scene.Width, scene.Scene.Height);
+            _sceneIdToImg[scene.Scene.SceneId] = img;
+            UpdateImage(img);
+        }
     }
 
-    public void AddToCombBox(string msg)
+    public bool AddToCombBox(string msg)
     {
-        scenesRendered.Add(msg);
+        if (SceneIds.Collection.Contains(msg))
+        {
+            base.InvokeAsync(StateHasChanged);
+            return false;
+        }
+        SceneIds.Collection.Add(msg);
         currentScene = msg;
         base.InvokeAsync(StateHasChanged);
+        return true;
     }
 
     public void ComboBoxSet(string msg)
     {
-        var img = _sceneIdToImg[int.Parse(msg)];
+        var img = _sceneIdToImg[msg];
         currentScene = msg;
         UpdateImage(img);
     }
@@ -100,10 +121,8 @@
         Console.WriteLine("ReactToTileRendered called");
         var img = tile.ToBitmap(_sceneIdToImg[tile.Tile.Scene.SceneId]);
         _sceneIdToImg[tile.Tile.Scene.SceneId] = img;
-        if (tile.Tile.Scene.SceneId == int.Parse(currentScene))
-        {
-            UpdateImage(img);
-        }
+        currentScene = tile.Tile.Scene.SceneId;
+        UpdateImage(img);
     }
 
     public void ReactoToSceneRendered(object sender, RenderedScene scene)
@@ -111,14 +130,17 @@
         Console.WriteLine("ReactoToSceneRendered called");
         var img = scene.ToBitmap(_sceneIdToImg[scene.Scene.SceneId]);
         _sceneIdToImg[scene.Scene.SceneId] = img;
-        if (scene.Scene.SceneId == int.Parse(currentScene))
-        {
-            UpdateImage(img);
-        }
+        currentScene = scene.Scene.SceneId;
+        UpdateImage(img);
     }
 
     protected override async Task OnInitializedAsync()
     {
+        currentScene = SceneIds.Collection.FirstOrDefault();
+        if (!(currentScene is null))
+        {
+            UpdateImage(_sceneIdToImg[currentScene]);
+        }
         RaytrakkaBridgeService.AddedScene += ReactToSceneAdded;
         RaytrakkaBridgeService.RenderedScene += ReactoToSceneRendered;
         RaytrakkaBridgeService.RenderedTile += ReactToTileRendered;

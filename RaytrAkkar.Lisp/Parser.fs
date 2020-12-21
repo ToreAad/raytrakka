@@ -10,7 +10,7 @@ let parseAtom =
     regex "^([!#$%&*+./:<=>?@^_~a-zA-Z][!#$%&*+./:<=>?@^_~a-zA-Z0-9]*)" |>> LispAtom
 
 let parseNumber = 
-    pint32 |>> LispNumber
+    pfloat |>> LispNumber
 
 let parseString =
     skipChar '"' >>. manyChars (noneOf "\"") .>> skipChar '"' |>> LispString

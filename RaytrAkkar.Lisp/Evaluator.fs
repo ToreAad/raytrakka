@@ -4,6 +4,7 @@ open LispTypes
 open ResultMonad
 open System.Linq.Expressions
 open System.Runtime.InteropServices.ComTypes
+open RaytrAkkar.Raytracer
     
 let rec disentangle (vals:LispVal list): result<(LispVal list)*(LispVal list)> =
     match vals with
@@ -24,6 +25,7 @@ let rec eval (env:Env) (exp:LispVal) : result<LispVal*Env> =
     match exp with
     | LispNumber num -> result {return ((LispNumber num), env)}
     | LispString str -> result {return ((LispString str), env)}
+    | LispWrapper obj -> result {return ((LispWrapper obj), env)}
     | LispBool b -> result {return ((LispBool b), env)}
     | LispList [] -> result {return ((Nil), env)}
     | Nil -> result {return ((Nil), env)}
@@ -120,12 +122,12 @@ and
         | Ok (LispList list, env) -> Ok list
         | _ -> Error (sprintf "%A did not evaluate to a list" exp)
 and
-    getNumber (env:Env) (exp:LispVal) : result<int> =
+    getNumber (env:Env) (exp:LispVal) : result<float> =
         match eval env exp with
         | Ok (LispNumber num, env) -> Ok (num)
         | _ -> Error (sprintf "%A did not evaluate to a number" exp)
 and 
-    getNumbers (env:Env) (exprs : LispVal list) : result<int list> =
+    getNumbers (env:Env) (exprs : LispVal list) : result<float list> =
         match exprs with
         | expr::rest -> 
             result {
@@ -154,19 +156,83 @@ and
                 return atom::restOfAtoms
             }
         | [] -> Ok []
-
+//and 
+//    getObject (env:Env) (exp:LispVal) : result<System.Object> =
+//        match eval env exp with
+//            | Ok (LispWrapper obj, env) -> Ok (obj)
+//            | _ -> Error "No object here"
+and
+    getObjectOfType<'T> (env:Env) (exp:LispVal) : result<'T> =
+        let t = eval env exp
+        match t with
+            | Ok (LispWrapper obj, env) -> 
+                match box obj with
+                    | :? 'T as typed -> Ok(typed)    
+            | _ -> Error "No object here"
+and
+    getManyObjectsOfType<'T> (env:Env) (exprs:LispVal list) : result<'T list> =
+        match exprs with
+        | expr::rest -> 
+            result {
+                let! typedObject = getObjectOfType<'T> env expr
+                let! restOftypedObject = getManyObjectsOfType<'T> env rest
+                return typedObject::restOftypedObject
+            }
+        | [] -> Ok []
 
 let evaluator exp =
     let primitiveEnv = Map.ofList [ 
-        ("var", LispNumber 42);
+        ("var", LispNumber 42.0);
         ("add", LispLambda 
             { parameters = ["a"; "b"];
             body = LispList [LispAtom "+"; LispAtom "a"; LispAtom "b"; LispAtom "c"];
-            closure = Map.ofList [("c", LispNumber 2 )]});
+            closure = Map.ofList [("c", LispNumber 2.0 )]});
         ("+", LispPrim (fun (vals : LispVal list) ->
                 result{
                     let! numbers = getNumbers Map.empty vals
-                    return LispNumber (List.fold (+) 0 numbers)
+                    return LispNumber (List.fold (+) 0.0 numbers)
+                }));
+        ("Vec3", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! numbers = getNumbers Map.empty vals
+                    return LispWrapper (new Vec3(numbers.[0],numbers.[1], numbers.[2]))
+                }));
+        ("Lambertian", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! vec = getObjectOfType<Vec3> Map.empty vals.[0]
+                    return LispWrapper (new Lambertian(vec))
+                }));
+        ("Metal", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! vec = getObjectOfType<Vec3> Map.empty vals.[0]
+                    let! f = getNumber Map.empty vals.[1]
+                    return LispWrapper (new Metal(vec, f))
+                }));
+        ("Dielectric", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! f = getNumber Map.empty vals.[0]
+                    return LispWrapper (new Dielectric(f))
+                }));
+        ("Sphere", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! vec = getObjectOfType<Vec3> Map.empty vals.[0]
+                    let! f = getNumber Map.empty vals.[1]
+                    let! mat = getObjectOfType<IMaterial> Map.empty vals.[2]
+                    return LispWrapper (new Sphere(vec, f, mat))
+                }));
+        ("World", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let!  hitables = getManyObjectsOfType<IHitable> Map.empty vals
+                    let world = new HitableCollection();
+                    Seq.iter (fun ele -> world.List.Add(ele)) hitables
+                    return LispWrapper (world)
+                }));
+        ("SimpleScene", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! world = getObjectOfType<IHitable> Map.empty vals.[0]
+                    let! camTo = getObjectOfType<Vec3> Map.empty vals.[1]
+                    let! camFrom = getObjectOfType<Vec3> Map.empty vals.[2]
+                    return LispWrapper (new SimpleScene(world, camTo, camFrom))
                 }));
     ]
     eval primitiveEnv exp

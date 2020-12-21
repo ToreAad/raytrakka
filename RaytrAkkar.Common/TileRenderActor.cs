@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using RaytrAkkar.Lisp;
 
 namespace RaytrAkkar.Common
 {
@@ -48,6 +49,7 @@ namespace RaytrAkkar.Common
 
         private byte[,,] DoRendering(RenderTile tile)
         {
+            var simpleScene = GetScene.SimpleScene(tile.Tile.Scene.Src);
             var scene = tile.Tile.Scene;
             var x = tile.Tile.X;
             var y = tile.Tile.Y;
@@ -55,15 +57,18 @@ namespace RaytrAkkar.Common
             var w = tile.Tile.Width;
             var data = new byte[w, h, 3];
 
-            var world = new HitableCollection();
-            world.List.Add(new Sphere(new Vec3(0, 0, -1), 0.5, new Lambertian(new Vec3(0.1, 0.2, 0.5))));
-            world.List.Add(new Sphere(new Vec3(0, -100.5, -1), 100, new Lambertian(new Vec3(0.8, 0.8, 0.0))));
-            world.List.Add(new Sphere(new Vec3(1, 0, -1), 0.5, new Metal(new Vec3(0.8, 0.6, 0.2), 0)));
-            world.List.Add(new Sphere(new Vec3(-1, 0, -1), 0.5, new Dielectric(1.5)));
-            //world.List.Add(new Sphere(new Vec3(-1, 0, -1), -0.45, new Dielectric(1.5)));
+            var world = simpleScene.World;
+            //var world = new HitableCollection();
+            //world.List.Add(new Sphere(new Vec3(0, 0, -1), 0.5, new Lambertian(new Vec3(0.1, 0.2, 0.5))));
+            //world.List.Add(new Sphere(new Vec3(0, -100.5, -1), 100, new Lambertian(new Vec3(0.8, 0.8, 0.0))));
+            //world.List.Add(new Sphere(new Vec3(1, 0, -1), 0.5, new Metal(new Vec3(0.8, 0.6, 0.2), 0)));
+            //world.List.Add(new Sphere(new Vec3(-1, 0, -1), 0.5, new Dielectric(1.5)));
+            ////world.List.Add(new Sphere(new Vec3(-1, 0, -1), -0.45, new Dielectric(1.5)));
 
-            var lookFrom = new Vec3(3, 3, 2);
-            var lookAt = new Vec3(0, 0, -1);
+            //var lookFrom = new Vec3(3, 3, 2);
+            //var lookAt = new Vec3(0, 0, -1);
+            var lookFrom = simpleScene.From;
+            var lookAt = simpleScene.To;
 
             var cam = new Camera(lookFrom, lookAt, new Vec3(0, 1, 0), 20, (double)(w + scene.Width) / (double)(h + scene.Height), 0.5, (lookFrom - lookAt).Length());
             var ns = 25;

@@ -36,7 +36,13 @@
     public int width = 768;
     public int height = 480;
 
-    public string lispScene { get; set; } = "(none 0 0)";
+    public string lispScene { get; set; } = @"(SimpleScene (World
+(Sphere (Vec3 0.0 0.0 -1.0) 0.5 (Lambertian (Vec3 0.1 0.2 0.5)))
+(Sphere (Vec3 0.0 -100.5 -1.0) 100 (Lambertian (Vec3 0.8 0.8 0.0)))
+(Sphere (Vec3 1.0 0.0 -1.0) 0.5 (Metal (Vec3 0.8 0.6 0.2) 0)) 
+(Sphere (Vec3 -1.0 0.0 -1.0) 0.5 (Dielectric 1.5))
+) (Vec3 0.0 0.0 -1.0) (Vec3 3.0 3.0 2.0)
+)";
 
     public List<string> scenesRendered => SceneIds.Collection.ToList();
     public string currentScene;

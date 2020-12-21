@@ -57,4 +57,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="richTextBox_lispScene.Text" xml:space="preserve">
+    <value>(SimpleScene (World
+(Sphere (Vec3 0.0 0.0 -1.0) 0.5 (Lambertian (Vec3 0.1 0.2 0.5)))
+(Sphere (Vec3 0.0 -100.5 -1.0) 100 (Lambertian (Vec3 0.8 0.8 0.0)))
+(Sphere (Vec3 1.0 0.0 -1.0) 0.5 (Metal (Vec3 0.8 0.8 0.0) 0))
+(Sphere (Vec3 -1.0 0.0 -1.0) 0.5 (Dielectric 1.5))
+) (Vec3 0.0 0.0 -1.0) (Vec3 3.0 3.0 2.0)
+)</value>
+  </data>
 </root>

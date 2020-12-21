@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RaytrAkkaForm));
             this.button1 = new System.Windows.Forms.Button();
             this.pictureBoxRender = new System.Windows.Forms.PictureBox();
             this.comboBoxScene = new System.Windows.Forms.ComboBox();
@@ -77,7 +78,7 @@
             this.richTextBox_lispScene.Name = "richTextBox_lispScene";
             this.richTextBox_lispScene.Size = new System.Drawing.Size(445, 104);
             this.richTextBox_lispScene.TabIndex = 3;
-            this.richTextBox_lispScene.Text = "(none 0 0)";
+            this.richTextBox_lispScene.Text = resources.GetString("richTextBox_lispScene.Text");
             // 
             // RaytrAkkaForm
             // 

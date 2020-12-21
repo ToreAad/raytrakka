@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RaytrAkkar.Lisp\RaytrAkkar.Lisp.fsproj" />
     <ProjectReference Include="..\RaytrAkkar.Raytracer\RaytrAkkar.Raytracer.csproj" />
   </ItemGroup>
 

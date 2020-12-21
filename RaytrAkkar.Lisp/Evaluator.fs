@@ -156,11 +156,6 @@ and
                 return atom::restOfAtoms
             }
         | [] -> Ok []
-//and 
-//    getObject (env:Env) (exp:LispVal) : result<System.Object> =
-//        match eval env exp with
-//            | Ok (LispWrapper obj, env) -> Ok (obj)
-//            | _ -> Error "No object here"
 and
     getObjectOfType<'T> (env:Env) (exp:LispVal) : result<'T> =
         let t = eval env exp

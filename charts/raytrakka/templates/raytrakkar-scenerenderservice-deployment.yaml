@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: raytrakkar-scenerenderservice
+  labels:
+    io.kompose.service: raytrakkar-scenerenderservice
+spec:
+  clusterIP: None
+  ports:
+  - port: 5212
+  selector:
+    io.kompose.service: raytrakkar-scenerenderservice
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: raytrakkar-scenerenderservice
+  name: raytrakkar-scenerenderservice
+spec:
+  serviceName: raytrakkar-scenerenderservice
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: raytrakkar-scenerenderservice
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: raytrakkar-scenerenderservice
+    spec:
+      containers:
+      - env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: CLUSTER_IP
+          value: "$(POD_NAME).raytrakkar-scenerenderservice"
+        - name: CLUSTER_PORT
+          value: "5212"
+        - name: CLUSTER_SEEDS
+          value: akka.tcp://raytrakkar@lighthouse-0.lighthouse:4053
+        image: raytrakka.azurecr.io/raytrakkarscenerenderservice:0.0.1
+        imagePullPolicy: ""
+        name: raytrakkar-scenerenderservice
+        resources: {}
+      imagePullSecrets:
+        - name: raytrakka-secret
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: 
+  replicas: 1

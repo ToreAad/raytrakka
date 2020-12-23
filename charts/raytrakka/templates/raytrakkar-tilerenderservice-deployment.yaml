@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: raytrakkar-tilerenderservice
+  labels:
+    io.kompose.service: raytrakkar-tilerenderservice
+spec:
+  clusterIP: None
+  ports:
+  - port: 5211
+  selector:
+    io.kompose.service: raytrakkar-tilerenderservice
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: raytrakkar-tilerenderservice
+  name: raytrakkar-tilerenderservice
+spec:
+  serviceName: raytrakkar-tilerenderservice
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: raytrakkar-tilerenderservice
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: raytrakkar-tilerenderservice
+    spec:
+      containers:
+      - env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: CLUSTER_IP
+          value: "$(POD_NAME).raytrakkar-tilerenderservice"
+        - name: CLUSTER_PORT
+          value: "5211"
+        - name: CLUSTER_SEEDS
+          value: akka.tcp://raytrakkar@lighthouse-0.lighthouse:4053
+        image: raytrakka.azurecr.io/raytrakkartilerenderservice:0.0.1
+        imagePullPolicy: ""
+        name: raytrakkar-tilerenderservice
+        resources: {}
+      imagePullSecrets:
+        - name: raytrakka-secret
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: 
+  replicas: 1

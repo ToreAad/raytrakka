@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: lighthouse
+  name: lighthouse
+spec:
+  serviceName: lighthouse
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: lighthouse
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: lighthouse
+    spec:
+      terminationGracePeriodSeconds: 35
+      containers:
+      - env:
+        - name: ACTORSYSTEM
+          value: raytrakkar
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: CLUSTER_IP
+          value: "$(POD_NAME).lighthouse"
+        - name: CLUSTER_PORT
+          value: "4053"
+        - name: CLUSTER_SEEDS
+          value: akka.tcp://raytrakkar@lighthouse-0.lighthouse:4053
+        image: petabridge/lighthouse:latest
+        imagePullPolicy: ""
+        name: lighthouse
+        ports:
+        - containerPort: 9110
+        - containerPort: 4053
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status:
+  replicas: 1

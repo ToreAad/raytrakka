@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: D:\Torea\Kompose\kompose.exe convert -c
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: lighthouse
+  name: lighthouse
+spec:
+  ports:
+  - name: "9110"
+    port: 9110
+    targetPort: 9110
+  - name: "4053"
+    port: 4053
+    targetPort: 4053
+  selector:
+    io.kompose.service: lighthouse
+status:
+  loadBalancer: {}

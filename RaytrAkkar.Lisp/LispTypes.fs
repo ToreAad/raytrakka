@@ -5,7 +5,6 @@ open ResultMonad
 type LispVal =
     | LispList of LispVal list
     | LispNumber of float
-    //| LispDouble of 
     | LispString of string
     | LispBool of bool
     | LispAtom of string

@@ -31,15 +31,19 @@ namespace RaytrAkkar.Common
             {
                 case RenderedScene scene:
                     _bridge.AddRenderedScene(scene);
-                    _bridge.Log($"{Self.Path} recieved a rendered scene with id {scene.Scene.SceneId}");
                     break;
                 case RenderedTile tile:
                     _bridge.AddRenderedTile(tile);
-                    _bridge.Log($"{Self.Path} recieved a rendered tile with id {tile.Tile.Scene.SceneId}");
                     break;
                 case RenderScene scene:
                     _raytracer.Tell(scene);
                     _bridge.AddScene(scene);
+                    break;
+                case RenderSceneFailed failedScene:
+                    _bridge.Log(failedScene.ErrorMsg);
+                    break;
+                case string msg:
+                    _bridge.Log(msg);
                     break;
             }
         }

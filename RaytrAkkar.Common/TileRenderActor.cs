@@ -11,9 +11,27 @@ using RaytrAkkar.Lisp;
 
 namespace RaytrAkkar.Common
 {
+    public class ProcessNext
+    {
+        public static ProcessNext Instance { get; } = new ProcessNext();
+        private ProcessNext() { }
+    }
+
+    public class RenderTileRecieved
+    {
+        public RenderTileRecieved(Tile tile)
+        {
+            Tile = tile;
+        }
+
+        public Tile Tile { get; }
+    }
+
     public class TileRenderActor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
+        private Queue<Task> _jobQueue = new Queue<Task>();
+        private Task _currentJob = null;
 
         public TileRenderActor()
         {
@@ -58,15 +76,6 @@ namespace RaytrAkkar.Common
             var data = new byte[w, h, 3];
 
             var world = simpleScene.World;
-            //var world = new HitableCollection();
-            //world.List.Add(new Sphere(new Vec3(0, 0, -1), 0.5, new Lambertian(new Vec3(0.1, 0.2, 0.5))));
-            //world.List.Add(new Sphere(new Vec3(0, -100.5, -1), 100, new Lambertian(new Vec3(0.8, 0.8, 0.0))));
-            //world.List.Add(new Sphere(new Vec3(1, 0, -1), 0.5, new Metal(new Vec3(0.8, 0.6, 0.2), 0)));
-            //world.List.Add(new Sphere(new Vec3(-1, 0, -1), 0.5, new Dielectric(1.5)));
-            ////world.List.Add(new Sphere(new Vec3(-1, 0, -1), -0.45, new Dielectric(1.5)));
-
-            //var lookFrom = new Vec3(3, 3, 2);
-            //var lookAt = new Vec3(0, 0, -1);
             var lookFrom = simpleScene.From;
             var lookAt = simpleScene.To;
 
@@ -102,10 +111,46 @@ namespace RaytrAkkar.Common
             Receive<RenderTile>(tile =>
             {
                 var sender = Sender;
-                var data = DoRendering(tile);
-                var msg = new RenderedTile(tile.Tile, data.Flatten());
-                Sender.Tell(msg);
+                sender.Tell(new RenderTileRecieved(tile.Tile));
+
+                var renderTask = new Task<ProcessNext>(() => {
+                    try
+                    {
+                        var data = DoRendering(tile);
+                        var okMsg = new RenderedTile(tile.Tile, data.Flatten());
+                        sender.Tell(okMsg);
+                    }
+                    catch (Exception ex)
+                    {
+                        var failureStr = ex.Message;
+                        var failureMsg = new RenderTileFailed(tile.Tile, $"{failureStr}");
+                        sender.Tell($"{failureStr}");
+                        sender.Tell(failureMsg);
+                    }
+                    return ProcessNext.Instance;
+                });
+                var pipeToTask = renderTask.PipeTo(Self);
+
+                _jobQueue.Enqueue(renderTask);
+                if (_currentJob == null)
+                {
+                    Self.Tell(ProcessNext.Instance);
+                };
             });
+
+            Receive<ProcessNext>( tile =>
+            {
+                if (_jobQueue.Count > 0)
+                {
+                    _currentJob = _jobQueue.Dequeue();
+                    _currentJob.Start();
+                }
+                else
+                {
+                    _currentJob = null;
+                }
+            }
+            );
         }
 
         public static Props Props() => Akka.Actor.Props.Create(() => new TileRenderActor());

@@ -9,13 +9,16 @@ module GetScene =
         let res = result {
             let! parsed = parser src
             let! e = evaluator parsed
-            return e
-            }
-        let evaluated =
-            match res with
-                | Ok v -> v.Item1
+            let! returnObject = match e with
+                | (LispWrapper obj, _) -> match obj with
+                                     | :? RaytrAkkar.Raytracer.SimpleScene as typed -> Ok typed
+                | _ -> Error "Evaluation did not return a SimpleScene"
 
-        let returnObject = match evaluated with
-            | LispWrapper obj -> match obj with
-                                 | :? RaytrAkkar.Raytracer.SimpleScene as typed -> typed
+            return returnObject
+            }
+        let returnObject =
+            match res with
+                | Ok v -> v
+                | Error msg -> failwith msg
+
         returnObject

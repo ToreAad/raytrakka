@@ -35,7 +35,6 @@ namespace RaytrAkkar.Web
         public event EventHandler<string> AddedLog;
         public void Log(string message)
         {
-            Debug.WriteLine(message);
             AddedLog?.Invoke(this, message);
         }
     }

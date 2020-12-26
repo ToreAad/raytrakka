@@ -30,9 +30,10 @@ let rec eval (env:Env) (exp:LispVal) : result<LispVal*Env> =
     | LispList [] -> result {return ((Nil), env)}
     | Nil -> result {return ((Nil), env)}
     | LispAtom atom -> 
-        match env.TryFind atom with
+        match env.TryFind atom with // TODO: UGLY
             | Some v -> Ok (v,env)
-            | None -> Error (sprintf "Could not find %A in env" atom)
+            | None -> Ok (LispAtom atom, env)
+            //| None -> Error (sprintf "Could not find %A in env" atom)
     | LispList [LispAtom "if"; pred; consequence; alternative] ->
         result {
             let! p = getBool env pred
@@ -49,6 +50,13 @@ let rec eval (env:Env) (exp:LispVal) : result<LispVal*Env> =
             return (lval, env)
         }
     | LispList ((LispList [(LispAtom "define"); LispAtom atom; expr])::rest : LispVal list) ->
+        result {
+            let! (expr, _) = eval env expr
+            let new_env = env.Add (atom, expr)
+            let! (new_expr, _) = eval new_env (LispList rest)
+            return (new_expr, env)
+        }
+    | LispList ((LispList [(LispAtom "define"); LispList ((LispAtom atom)::[]); expr])::rest : LispVal list) ->
         result {
             let! (expr, _) = eval env expr
             let new_env = env.Add (atom, expr)
@@ -143,7 +151,8 @@ and
             | _ -> Error (sprintf "%A did not evaluate to a boolean" exp)
 and 
     getAtom (env:Env) (exp:LispVal) : result<string> =
-        match eval env exp with
+        let temp = eval env exp
+        match temp with
             | Ok (LispAtom atom, env) -> Ok (atom)
             | _ -> Error "No atom here"
 and 
@@ -176,16 +185,28 @@ and
         | [] -> Ok []
 
 let evaluator exp =
-    let primitiveEnv = Map.ofList [ 
-        ("var", LispNumber 42.0);
-        ("add", LispLambda 
-            { parameters = ["a"; "b"];
-            body = LispList [LispAtom "+"; LispAtom "a"; LispAtom "b"; LispAtom "c"];
-            closure = Map.ofList [("c", LispNumber 2.0 )]});
+    let primitiveEnv = Map.ofList [
+        ("-", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! number0 = getNumber Map.empty vals.[0]
+                    let! number1 = getNumber Map.empty vals.[1]
+                    return LispNumber (number0 - number1)
+                }));
+        ("/", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! number0 = getNumber Map.empty vals.[0]
+                    let! number1 = getNumber Map.empty vals.[1]
+                    return LispNumber (number0 / number1)
+                }));
         ("+", LispPrim (fun (vals : LispVal list) ->
                 result{
                     let! numbers = getNumbers Map.empty vals
                     return LispNumber (List.fold (+) 0.0 numbers)
+                }));
+        ("*", LispPrim (fun (vals : LispVal list) ->
+                result{
+                    let! numbers = getNumbers Map.empty vals
+                    return LispNumber (List.fold (*) 1.0 numbers)
                 }));
         ("Vec3", LispPrim (fun (vals : LispVal list) ->
                 result{

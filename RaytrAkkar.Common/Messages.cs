@@ -102,6 +102,18 @@ namespace RaytrAkkar.Common
         public Tile Tile { get; }
     }
 
+    public class RenderTileFailed
+    {
+        public RenderTileFailed(Tile tile, string msg)
+        {
+            Tile = tile;
+            ErrorMsg = msg;
+        }
+
+        public Tile Tile { get; }
+        public string ErrorMsg { get; }
+    }
+
     public class RenderedScene
     {
         public RenderedScene(Scene scene, byte[] data)
@@ -122,6 +134,18 @@ namespace RaytrAkkar.Common
         }
 
         public Scene Scene { get; }
+    }
+
+    public class RenderSceneFailed
+    {
+        public RenderSceneFailed(Scene scene, string msg)
+        {
+            Scene = scene;
+            ErrorMsg = msg;
+        }
+
+        public Scene Scene { get; }
+        public string ErrorMsg { get; }
     }
 
     public class Scene
@@ -168,5 +192,14 @@ namespace RaytrAkkar.Common
     {
         public static PoolPrimer Instance { get; } = new PoolPrimer();
         private PoolPrimer() { }
+    }
+
+    public class PleaseRenderSomeTilesRequest{
+        public PleaseRenderSomeTilesRequest(int amount)
+        {
+            Amount = amount;
+        }
+
+        public int Amount { get; set; }
     }
 }

@@ -27,6 +27,16 @@
         <div>
             <button class="btn btn-primary" @onclick="Render">Render</button>
         </div>
+        <div >
+            <ul style="height: 100px; width: 100%; overflow: hidden; overflow-y: scroll; list-style-type: none;">
+                @foreach (var item in logMsgs)
+                {
+                    <li>
+                        @item
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -53,6 +63,7 @@
         return String.Format("data:image/png;base64,{0}", Convert.ToBase64String(BitmapToBytes(img)));
     }
 
+    public List<string> logMsgs = new List<string>();
 
     public string imageString = ImgToString(new Bitmap(768, 480));
 
@@ -140,6 +151,13 @@
         UpdateImage(img);
     }
 
+    public void ReactToLog(object sender, string errorMsg)
+    {
+        Console.WriteLine(errorMsg);
+        logMsgs.Add(errorMsg);
+        base.InvokeAsync(StateHasChanged);
+    }
+
     protected override async Task OnInitializedAsync()
     {
         currentScene = SceneIds.Collection.FirstOrDefault();
@@ -150,5 +168,6 @@
         RaytrakkaBridgeService.AddedScene += ReactToSceneAdded;
         RaytrakkaBridgeService.RenderedScene += ReactoToSceneRendered;
         RaytrakkaBridgeService.RenderedTile += ReactToTileRendered;
+        RaytrakkaBridgeService.AddedLog += ReactToLog;
     }
 }

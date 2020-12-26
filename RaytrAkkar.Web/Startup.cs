@@ -38,7 +38,6 @@ namespace RaytrAkkar.Web
     public class SceneIds
     {
         public readonly ConcurrentBag<string> Collection = new ConcurrentBag<string>();
-
     }
 
     public class Startup

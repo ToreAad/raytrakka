@@ -3,3 +3,12 @@
     flex-direction: column;
     justify-content: flex-start;
 }
+
+ul {
+    height: 100px;
+    width: 18%;
+    overflow: hidden;
+    overflow-y: scroll;
+    list-style-type: none;
+}
+

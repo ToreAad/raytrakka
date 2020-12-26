@@ -35,7 +35,7 @@ spec:
           value: "5210"
         - name: CLUSTER_SEEDS
           value: akka.tcp://raytrakkar@lighthouse-0.lighthouse:4053
-        image: raytrakka.azurecr.io/raytrakkarweb:0.0.1
+        image: raytrakka.azurecr.io/raytrakkarweb:0.0.6
         imagePullPolicy: ""
         name: raytrakkar-web
         ports:

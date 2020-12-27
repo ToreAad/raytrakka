@@ -23,7 +23,7 @@ metadata:
   name: raytrakkar-tilerenderservice
 spec:
   serviceName: raytrakkar-tilerenderservice
-  replicas: 1
+  replicas: {{ .Values.tilerenderer.replicas }}
   selector:
     matchLabels:
       io.kompose.service: raytrakkar-tilerenderservice
@@ -48,14 +48,18 @@ spec:
           value: "5211"
         - name: CLUSTER_SEEDS
           value: akka.tcp://raytrakkar@lighthouse-0.lighthouse:4053
-        image: raytrakka.azurecr.io/raytrakkartilerenderservice:0.0.6
+        image: raytrakka.azurecr.io/raytrakkartilerenderservice:{{ .Values.tilerenderer.version }}
         imagePullPolicy: ""
         name: raytrakkar-tilerenderservice
-        resources: {}
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "0.5"
       imagePullSecrets:
         - name: raytrakka-secret
       restartPolicy: Always
       serviceAccountName: ""
       volumes: null
 status: 
-  replicas: 1
+  replicas: {{ .Values.tilerenderer.replicas }}

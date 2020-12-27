@@ -15,23 +15,28 @@ namespace RaytrAkkar.Common
         private readonly Queue<Tile> _tilesToProcess = new Queue<Tile>();
         private readonly HashSet<Tile> _unconfirmedTilesToProcess = new HashSet<Tile>();
         private readonly HashSet<Tile> _tilesBeingProcessed = new HashSet<Tile>();
-        private readonly HashSet<Tile> _failedTiles = new HashSet<Tile>();
-        private readonly HashSet<string> _errorMsgs = new HashSet<string>();
+        private readonly HashSet<Tile> _SetOfTilesToProcess = new HashSet<Tile>();
         private IActorRef _supervisor;
         private IActorRef _sender;
         private readonly IActorRef _tileRenderer;
         private DateTime _lastReceived;
 
+        private readonly int _nrOfSimultaneousJobs = 8;
+
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         public SceneRenderActor(IActorRef supervisor)
         {
-            
             _supervisor = supervisor;
             _tileRenderer = Context.ActorOf(TileRenderActor.Props().WithRouter(FromConfig.Instance), $"tile-renderer");
-            foreach(var _ in Enumerable.Range(0, 10))
+            try
             {
-                _tileRenderer.Tell(PoolPrimer.Instance);
+                var strNrsOfSimultaneousJobs = Environment.GetEnvironmentVariable("nrsimultaneousjobs");
+                _nrOfSimultaneousJobs = Int32.Parse(strNrsOfSimultaneousJobs);
+            }
+            catch
+            {
+                _nrOfSimultaneousJobs = 8;
             }
         }
 
@@ -56,11 +61,12 @@ namespace RaytrAkkar.Common
                                 var _w = Math.Min(w, _scene.Width - x);
                                 var tile = new Tile(_scene, tileIndex, x, y, _h, _w);
                                 _tilesToProcess.Enqueue(tile);
+                                _SetOfTilesToProcess.Add(tile);
                                 tileIndex++;
                             }
                         }
 
-                        Self.Tell(new PleaseRenderSomeTilesRequest(8));
+                        Self.Tell(new PleaseRenderSomeTilesRequest(_nrOfSimultaneousJobs));
                         break;
                     }
 
@@ -97,8 +103,9 @@ namespace RaytrAkkar.Common
                         {
                             _sender.Tell($"Timeout I am resending {_unconfirmedTilesToProcess.Count} missing tiles :(");
                             Log.Info("Timeout I am resending missing tiles");
-                            foreach (var tile in _unconfirmedTilesToProcess)
+                            foreach (var tile in _unconfirmedTilesToProcess.Concat(_SetOfTilesToProcess.Except(_tilesBeingProcessed)).Take(_nrOfSimultaneousJobs))
                             {
+                                _unconfirmedTilesToProcess.Add(tile);
                                 var tileRenderRequest = new RenderTile(tile);
                                 _tileRenderer.Tell(tileRenderRequest);
                             }
@@ -119,11 +126,6 @@ namespace RaytrAkkar.Common
                             _tileRenderer.Tell(tileRenderRequest);
                         }
                         
-                        if (!_tilesBeingProcessed.Contains(tile.Tile))
-                        {
-                            _sender.Tell("Tile processed at least one already :(");
-                            break;
-                        }
                         Log.Info($"Recieved tile with scene-tile-id:{tile.Tile.Scene.SceneId}-{tile.Tile.TileId}");
                         _sender.Forward(tile);
                         int w = tile.Tile.Width;
@@ -141,7 +143,8 @@ namespace RaytrAkkar.Common
                         }
 
                         _tilesBeingProcessed.Remove(tile.Tile);
-                        if(_tilesBeingProcessed.Count == 0)
+                        _SetOfTilesToProcess.Remove(tile.Tile);
+                        if (_SetOfTilesToProcess.Count == 0)
                         {
                             var msg = new RenderedScene(_scene, _values.Flatten());
                             _supervisor.Tell(msg);
@@ -158,14 +161,6 @@ namespace RaytrAkkar.Common
 
                 case RenderTileFailed failedTile:
                     {
-                        //if (!_errorMsgs.Contains(failedTile.ErrorMsg))
-                        //{
-                        //    _errorMsgs.Add(failedTile.ErrorMsg);
-                        //    _sender.Tell(new RenderSceneFailed(_scene, failedTile.ErrorMsg));
-                        //}
-                        //_sender.Tell(new RenderSceneFailed(_scene, failedTile.ErrorMsg));
-                        //_tilesBeingProcessed.Remove(failedTile.Tile);
-                        //_failedTiles.Add(failedTile.Tile);
                         _sender.Tell(new RenderSceneFailed(_scene, failedTile.ErrorMsg));
                         Self.Tell(PoisonPill.Instance);
                         break;

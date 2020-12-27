@@ -1,0 +1,13 @@
+tilerenderer:
+    replicas: 1
+    version: 0.0.7
+scenerenderer:
+    replicas: 1
+    version: 0.0.8
+    nrsimultaneousjobs: 8
+raytracer:
+    replicas: 1
+    version: 0.0.7
+web:
+    replicas: 1
+    version: 0.0.7

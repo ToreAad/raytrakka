@@ -4,6 +4,7 @@ using Akka.Routing;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RaytrAkkar.Common
 {
@@ -28,6 +29,7 @@ namespace RaytrAkkar.Common
                     Log.Info($"Received render scene request from {Sender.Path}");
                     var sceneRenderer = Context.ActorOf(SceneRenderActor.Props(Self));
                     _sceneRenderers.Add(scene.Scene.SceneId, sceneRenderer);
+                    Task.Delay(1000).Wait(); // Give actor some time to think before sending requests to it.
                     sceneRenderer.Forward(scene);
                     break;
 

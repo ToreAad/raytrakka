@@ -48,10 +48,15 @@ spec:
           value: "5213"
         - name: CLUSTER_SEEDS
           value: akka.tcp://raytrakkar@lighthouse-0.lighthouse:4053
-        image: raytrakka.azurecr.io/raytrakkarraytracerservice:0.0.6
+        image: raytrakka.azurecr.io/raytrakkarraytracerservice:{{ .Values.raytracer.version }}
         imagePullPolicy: ""
         name: raytrakkar-raytracerservice
         resources: {}
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "0.1"
       imagePullSecrets:
         - name: raytrakka-secret
       restartPolicy: Always

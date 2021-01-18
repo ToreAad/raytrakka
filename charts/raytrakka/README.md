@@ -1,1 +1,1 @@
-This chart was created by Kompose
+Chart for deploying raytrakka onto kubernetes cluster.

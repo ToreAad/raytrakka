@@ -7,3 +7,5 @@ Lisp interpreter is heavily based on work of https://www.lucabol.com/posts/2011-
 to an F# crowd.
 
 Overall Akka .Net configuration is inspired by http://www.rickyterrell.com/?p=197.
+
+![alt text](./example_scene.PNG)

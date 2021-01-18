@@ -10,7 +10,7 @@ metadata:
   name: raytrakkar-web
 spec:
   serviceName: raytrakkar-web
-  replicas: 1
+  replicas: {{ .Values.web.replicas }}
   selector:
     matchLabels:
       io.kompose.service: raytrakkar-web

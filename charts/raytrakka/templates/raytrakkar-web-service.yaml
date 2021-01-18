@@ -11,9 +11,10 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - name: "8080"
+  - name: "80"
     port: 80
     targetPort: 80
+  {{ gt (float64 .Values.web.replicas) 1.0 | ternary "sessionAffinity: ClientIP" "sessionAffinity: None"}}
   selector:
     io.kompose.service: raytrakkar-web
 status:
